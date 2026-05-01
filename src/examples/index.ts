@@ -31,6 +31,12 @@ export const EXAMPLES: Example[] = [
     source: 'L = { a^n | n%3 = 1, n >= 0 }',
     note: 'מודולו על משתנה יחיד — מחזור 3 מצבים',
   },
+  {
+    id: 'shuffle-ab',
+    label: '{ w | #a(w)%2=0 ∧ #b(w)%3=0 }',
+    source: 'L = { w | w in {a,b}*, #a(w) % 2 = 0, #b(w) % 3 = 0 }',
+    note: 'ערבוב חופשי של אותיות — מכפלה של מחזורי 2×3 = 6 מצבים',
+  },
 
   // ── Non-regular but context-free (PDA) ─────────────────────────────────
   {

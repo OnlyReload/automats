@@ -302,6 +302,23 @@ function parseArithTerm(c: Cursor): ArithExpr {
 
 function parseArithFact(c: Cursor): ArithExpr {
   const t = c.peek();
+  // Letter-count expression: #a(w) — count of letter `a` in word var `w`.
+  if (t.kind === 'HASH') {
+    c.consume();
+    const letterTok = c.expect('IDENT', "אחרי # נדרשת אות (כמו #a(w))");
+    if (letterTok.text.length !== 1) {
+      throw new DslError("האות אחרי # חייבת להיות תו בודד (למשל #a(w))", letterTok.span);
+    }
+    c.expect('LPAREN', "נדרש ( אחרי #" + letterTok.text);
+    const wvTok = c.expect('IDENT', "נדרש שם של משתנה מילה בתוך #" + letterTok.text + "(...)");
+    const close = c.expect('RPAREN', "נדרש ) אחרי #" + letterTok.text + "(" + wvTok.text);
+    return {
+      kind: 'letterCount',
+      letter: letterTok.text,
+      wordVar: wvTok.text,
+      span: spanOf(t.span, close.span),
+    };
+  }
   if (t.kind === 'INT') {
     c.consume();
     return { kind: 'int', value: parseInt(t.text, 10), span: t.span };

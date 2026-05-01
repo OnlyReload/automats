@@ -1,7 +1,8 @@
 import { getActiveCy } from './Graph';
+import { getBuilderCy } from '../builder/BuilderCanvas';
 
 export function exportPng(filename = 'automaton.png'): void {
-  const cy = getActiveCy();
+  const cy = getActiveCy() ?? getBuilderCy();
   if (!cy) return;
   const png64 = cy.png({
     full: true,

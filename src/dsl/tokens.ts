@@ -8,6 +8,7 @@ export type TokenKind =
   | 'EQ' | 'GE' | 'LE' | 'GT' | 'LT'
   | 'PLUS' | 'MINUS' | 'STAR' | 'SLASH' | 'PERCENT'
   | 'CARET'
+  | 'HASH'
   | 'LPAREN' | 'RPAREN' | 'LBRACE' | 'RBRACE'
   | 'COMMA' | 'PIPE'
   | 'EOF';
@@ -79,6 +80,7 @@ export function tokenize(input: string): Token[] {
       '/': 'SLASH',
       '%': 'PERCENT',
       '^': 'CARET',
+      '#': 'HASH',
       '(': 'LPAREN',
       ')': 'RPAREN',
       '{': 'LBRACE',

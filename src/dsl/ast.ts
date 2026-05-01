@@ -7,6 +7,7 @@ export interface Node {
 export type ArithExpr =
   | (Node & { kind: 'int'; value: number })
   | (Node & { kind: 'var'; name: string })
+  | (Node & { kind: 'letterCount'; letter: string; wordVar: string })
   | (Node & { kind: 'binop'; op: '+' | '-' | '*' | '/' | '%'; left: ArithExpr; right: ArithExpr });
 
 export type Atom =

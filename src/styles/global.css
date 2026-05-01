@@ -350,6 +350,137 @@ textarea:focus, select:focus {
   font-size: 12px;
 }
 
+/* ─── Builder ──────────────────────────────────────────── */
+.builder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.builder-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.builder-tool {
+  flex: 1 1 auto;
+  font-size: 13px;
+  padding: 6px 10px;
+}
+
+.builder-tool.active {
+  background: var(--accent);
+  color: #0e0f13;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.builder-clear {
+  flex: 0 0 auto;
+  color: var(--error);
+}
+
+.builder-hint {
+  background: var(--panel-2);
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.builder-cancel {
+  font-size: 12px;
+  padding: 3px 8px;
+}
+
+.builder-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.builder-actions button {
+  flex: 1;
+  background: var(--accent);
+  color: #0e0f13;
+  border-color: var(--accent);
+  font-weight: 600;
+}
+
+.builder-actions button:disabled {
+  background: var(--panel-2);
+  color: var(--muted);
+  border-color: var(--border);
+  font-weight: normal;
+}
+
+.analysis-panel {
+  background: rgba(158, 206, 106, 0.06);
+  border: 1px solid rgba(158, 206, 106, 0.3);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  line-height: 1.5;
+}
+
+.analysis-panel strong { color: var(--text); }
+
+.analysis-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.analysis-desc {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 6px 8px;
+}
+
+.analysis-regex {
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.analysis-regex code {
+  font-family: var(--mono);
+  background: var(--panel-2);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 13px;
+  word-break: break-all;
+  display: inline-block;
+}
+
+.analysis-meta {
+  color: var(--muted);
+  font-size: 12px;
+  flex-direction: row;
+  gap: 6px;
+}
+
+.analysis-samples {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+.analysis-samples code {
+  font-family: var(--mono);
+  font-size: 12px;
+}
+
 .empty-state {
   position: absolute;
   inset: 0;

@@ -121,6 +121,7 @@ function constExponent(e: ArithExpr): number | null {
 function foldConst(e: ArithExpr): number | null {
   if (e.kind === 'int') return e.value;
   if (e.kind === 'var') return null;
+  if (e.kind === 'letterCount') return null;
   const l = foldConst(e.left);
   const r = foldConst(e.right);
   if (l === null || r === null) return null;

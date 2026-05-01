@@ -1,5 +1,5 @@
 export const strings = {
-  title: 'Automats — מצייר אוטומטים משפה',
+  title: 'מצייר אוטומטים',
   subtitle: 'אתר אוטומטים מדמח אופק רוזנטל',
   emptyHint: 'הקליד שפה כדי לראות את האוטומט.',
   errorHint: 'תקנ את השגיאה כדי לראות את האוטומט.',
@@ -28,8 +28,37 @@ export const strings = {
   // Compose mode
   modeSingle: 'שפה יחידה',
   modeCompose: 'הרכבת שפות',
+  modeBuild: 'בניית אוטומט',
   composeAddLang: 'שפה חדשה',
   composeRemoveLang: 'הסר שפה',
   composeResultLabel: 'ביטוי תוצאה:',
   composeResultPanel: 'תוצאה',
+
+  // Builder
+  toolAddState: 'הוסף מצב',
+  toolAddTransition: 'הוסף מעבר',
+  toolToggleAccept: 'מצב מקבל',
+  toolSetStart: 'מצב התחלתי',
+  toolDelete: 'מחק',
+  toolClear: 'נקה הכל',
+  toolCancel: 'ביטול',
+  hintAddState: 'לחץ במקום ריק על הציור כדי להוסיף מצב חדש.',
+  hintAddTransitionFrom: 'לחץ על מצב מקור עבור המעבר החדש.',
+  hintPickTarget: (from: string) => `מקור: ${from}. לחץ על מצב יעד (אפשר על אותו מצב לולאה עצמית).`,
+  hintToggleAccept: 'לחץ על מצב כדי להפוך אותו למקבל / לא־מקבל.',
+  hintSetStart: 'לחץ על מצב כדי להגדיר אותו כמצב ההתחלה.',
+  hintDelete: 'לחץ על מצב או מעבר כדי למחוק. מחיקת מצב מסירה גם את כל המעברים אליו וממנו.',
+  promptSymbols: 'סימני קלט עבור המעבר (אפשר כמה, מופרדים בפסיק; ε = מעבר ריק):',
+  builderEmptyHint: 'בחר "הוסף מצב" ולחץ על הבד כדי להתחיל.',
+
+  // Analysis
+  analyzeLanguage: 'נתח שפה',
+  analyzing: 'מנתח…',
+  analysisDescription: 'תיאור השפה:',
+  analysisRegex: 'ביטוי רגולרי:',
+  analysisAlphabet: 'א״ב',
+  analysisMinStates: 'מצבים במזער DFA',
+  analysisAccepted: 'דוגמאות מתקבלות:',
+  analysisRejected: 'דוגמאות נדחות:',
+  noDescriptionFound: 'לא זוהתה תבנית מוכרת. השפה מתוארת באופן מדויק על ידי הביטוי הרגולרי שלהלן.',
 };

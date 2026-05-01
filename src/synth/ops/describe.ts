@@ -120,6 +120,7 @@ function precOf(op: '+' | '-' | '*' | '/' | '%'): number {
 function printArith(e: ArithExpr, parentPrec = 0): string {
   if (e.kind === 'int') return String(e.value);
   if (e.kind === 'var') return e.name;
+  if (e.kind === 'letterCount') return `#${e.letter}(${e.wordVar})`;
   const my = precOf(e.op);
   const s = `${printArith(e.left, my)}${e.op}${printArith(e.right, my)}`;
   return my < parentPrec ? `(${s})` : s;

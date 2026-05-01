@@ -210,6 +210,7 @@ function satisfies(c: Constraint, env: Record<string, number>): boolean {
 function evalExpr(e: ArithExpr, env: Record<string, number>): number | null {
   if (e.kind === 'int') return e.value;
   if (e.kind === 'var') return env[e.name] ?? null;
+  if (e.kind === 'letterCount') return null;
   const l = evalExpr(e.left, env);
   const r = evalExpr(e.right, env);
   if (l === null || r === null) return null;

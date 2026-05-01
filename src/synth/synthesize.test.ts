@@ -313,6 +313,55 @@ describe('synthesize — regular textbook languages', () => {
   });
 });
 
+describe('synthesize — free-shuffle (letter-count constraints)', () => {
+  it('#a(w)%2=0 ∧ #b(w)%3=0: every interleaving with even a-count and 3|b-count', () => {
+    const nfa = buildNFA('L = { w | w in {a,b}*, #a(w) % 2 = 0, #b(w) % 3 = 0 }');
+    expect(nfa.states.length).toBe(6); // product of 2-cycle and 3-cycle
+    const accepts = simulator(nfa);
+    expect(accepts('')).toBe(true);             // 0 a's, 0 b's
+    expect(accepts('aa')).toBe(true);            // 2 a's
+    expect(accepts('bbb')).toBe(true);           // 3 b's
+    expect(accepts('abbab')).toBe(true);         // 2 a's, 3 b's interleaved
+    expect(accepts('bababa')).toBe(false);       // 3 a's (odd) — reject
+    expect(accepts('aabbb')).toBe(true);
+    expect(accepts('aabbba')).toBe(false);       // 3 a's
+    expect(accepts('a')).toBe(false);
+    expect(accepts('ab')).toBe(false);
+    expect(accepts('aaabbb')).toBe(false);       // 3 a's
+    expect(accepts('aaaabbbbbb')).toBe(true);    // 4 a's, 6 b's
+  });
+
+  it('single-letter mod: { w | w in {a}*, #a(w)%3=1 } gives 3-state cycle', () => {
+    const nfa = buildNFA('L = { w | w in {a}*, #a(w) % 3 = 1 }');
+    expect(nfa.states.length).toBe(3);
+    const accepts = simulator(nfa);
+    expect(accepts('')).toBe(false);
+    expect(accepts('a')).toBe(true);
+    expect(accepts('aa')).toBe(false);
+    expect(accepts('aaa')).toBe(false);
+    expect(accepts('aaaa')).toBe(true);
+  });
+
+  it('count bound: { w | w in {a,b}*, #a(w) >= 2 } accepts iff at least two a\'s', () => {
+    const nfa = buildNFA('L = { w | w in {a,b}*, #a(w) >= 2 }');
+    const accepts = simulator(nfa);
+    expect(accepts('')).toBe(false);
+    expect(accepts('a')).toBe(false);
+    expect(accepts('b')).toBe(false);
+    expect(accepts('aa')).toBe(true);
+    expect(accepts('bab')).toBe(false);
+    expect(accepts('baba')).toBe(true);
+    expect(accepts('bbbab')).toBe(false);
+    expect(accepts('aabbbb')).toBe(true);
+  });
+
+  it('cross-letter equality { w | #a(w) = #b(w) } is non-regular and rejected', () => {
+    expect(() =>
+      buildNFA('L = { w | w in {a,b}*, #a(w) = #b(w) }')
+    ).toThrow(DslError);
+  });
+});
+
 describe('synthesize — non-regular rejections', () => {
   it('L5: { a^n c^2 b^m | n/3 = m } rejected by R3', () => {
     expect(() => buildNFA('L5 = { a^n c^2 b^m | n/3 = m, m >= 0, n >= 0 }')).toThrow(DslError);

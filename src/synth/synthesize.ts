@@ -7,6 +7,7 @@ import { classify } from './classifier';
 import { dispatch, type PatternContext } from './patterns';
 import { dispatchPda } from './pda';
 import { buildSkeleton, type Block } from './skeleton';
+import { tryFreeShuffle } from './freeShuffle';
 
 export type Automaton = NFA | PDA;
 
@@ -16,6 +17,16 @@ export function isPDA(a: Automaton): a is PDA {
 
 export function synthesize(decl: LangDecl): Automaton {
   const skeleton = buildSkeleton(decl);
+
+  // Free-shuffle path: `{ w | w in Σ*, … #α(w) … }` — single word var as the
+  // whole word, with constraints on letter counts. Try this before the regular
+  // block-pattern classifier (which would otherwise reject any wordRef).
+  const fs = tryFreeShuffle(decl, skeleton);
+  if (fs) {
+    if (fs.error) throw fs.error;
+    if (fs.nfa) return fs.nfa;
+  }
+
   const cls = classify(decl, skeleton);
 
   if (cls.kind === 'unsupported') {

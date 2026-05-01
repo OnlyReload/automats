@@ -355,6 +355,15 @@ export const cyStylesheet: cytoscape.StylesheetCSS[] = [
       'control-point-weights': '0.5',
     },
   },
+  // ── Builder: selected source for in-progress transition ──────────────
+  {
+    selector: 'node.builder-selected',
+    css: {
+      'border-color': '#e0af68',
+      'border-width': 4,
+      'background-color': '#2a2418',
+    },
+  },
   // ── Start-arrow styling ───────────────────────────────────────────────
   {
     selector: 'edge.start-edge',
