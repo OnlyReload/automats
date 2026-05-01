@@ -355,10 +355,10 @@ function parseConstraints(tokens: Token[]): Constraint[] {
   const c = new Cursor(tokens);
   const out: Constraint[] = [];
   if (c.match('EOF')) return out;
-  out.push(parseConstraint(c));
+  out.push(...parseConstraint(c));
   while (c.match('COMMA') || (c.peek().kind === 'IDENT' && c.peek().text === 'and')) {
     c.consume();
-    out.push(parseConstraint(c));
+    out.push(...parseConstraint(c));
   }
   if (!c.match('EOF')) {
     const t = c.peek();
@@ -367,7 +367,26 @@ function parseConstraints(tokens: Token[]): Constraint[] {
   return out;
 }
 
-function parseConstraint(c: Cursor): Constraint {
+// Detect the `n, m, k > ...` var-list shorthand: a run of `IDENT (COMMA IDENT)+`
+// terminated by a relational operator. Returns the variable tokens (≥2) or null.
+// We also bail out if the var-list looks like the start of a `wordvar in {…}`
+// declaration, which is handled separately.
+function tryVarListShorthand(c: Cursor): Token[] | null {
+  if (c.peek().kind !== 'IDENT' || c.peek(1).kind !== 'COMMA') return null;
+  const vars: Token[] = [];
+  let j = 0;
+  while (c.peek(j).kind === 'IDENT' && c.peek(j + 1).kind === 'COMMA') {
+    vars.push(c.peek(j));
+    j += 2;
+  }
+  if (c.peek(j).kind !== 'IDENT') return null;
+  vars.push(c.peek(j));
+  const after = c.peek(j + 1);
+  if (!REL_OP_KINDS.has(after.kind)) return null;
+  return vars;
+}
+
+function parseConstraint(c: Cursor): Constraint[] {
   // Lookahead for "wordvar in {a,b,...}*"
   const t = c.peek();
   if (
@@ -392,15 +411,48 @@ function parseConstraint(c: Cursor): Constraint {
     if (c.match('STAR')) {
       endSpan = c.consume().span;
     }
-    return {
+    return [{
       kind: 'wordVarDecl',
       wordVar: wvTok.text,
       alphabet,
       span: spanOf(wvTok.span, endSpan),
-    };
+    }];
   }
 
-  // Otherwise, a chained relation: expr REL expr [REL expr]*
+  // Var-list shorthand: `n, m, k > 0` ≡ `n > 0, m > 0, k > 0`. Detected only
+  // when the head is `IDENT, IDENT (, IDENT)*` followed by a rel-op, so plain
+  // `n > 0` and chained `0 < n < m` continue through the normal path.
+  const vars = tryVarListShorthand(c);
+  if (vars) {
+    // Drop everything except the last var (which the normal path will consume
+    // as the first arith operand), then parse the rel chain once.
+    for (let k = 0; k < vars.length - 1; k++) {
+      c.consume(); // var
+      c.consume(); // comma
+    }
+    const base = parseRelChain(c);
+    const out: Constraint[] = [];
+    for (let k = 0; k < vars.length - 1; k++) {
+      const v = vars[k];
+      const operands: ArithExpr[] = [
+        { kind: 'var', name: v.text, span: v.span },
+        ...base.operands.slice(1),
+      ];
+      out.push({
+        kind: 'rel',
+        operands,
+        ops: base.ops,
+        span: spanOf(v.span, base.span),
+      });
+    }
+    out.push(base);
+    return out;
+  }
+
+  return [parseRelChain(c)];
+}
+
+function parseRelChain(c: Cursor): Constraint & { kind: 'rel' } {
   const operands: ArithExpr[] = [parseArithExpr(c)];
   const ops: RelOp[] = [];
   while (REL_OP_KINDS.has(c.peek().kind)) {
